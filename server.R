@@ -21,22 +21,24 @@ server <- function(input, output) {
   # CZECH INFLATION
   library(rvest)
   library(dplyr)
+  library(forecast)
+  library(tseries)
   link = "https://www.czso.cz/csu/czso/mira_inflace"
   inf = read_html(link)
   inf_table <- inf %>% html_nodes("table") %>% .[2] %>% 
     html_table(fill = TRUE) %>% .[[1]]
   
-  inf_table <- inf_table[7:28,2:13]
+  inf_table <- inf_table[31:55,2:13]
   inf_vector <- as.vector(t(inf_table))
   inf_vector <- as.numeric(gsub(",", ".", inf_vector))
   
   output$inflation <- renderPlot ({
-    Inflation <- ts(inf_vector, start = c(2000, 1),frequency = 12) # year month
+    Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # year month
     plot(Inflation, lwd = 2, col = "red", main = "Inflation in the Czech Republic")
   })
   
   output$current <- renderTable ({
-    Inflation <- ts(inf_vector, start = c(2000, 1),frequency = 12) # ts
+    Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # ts
     dmn <- list(month.abb, unique(floor(time(Inflation)))) # df
     current <- as.data.frame(t(matrix(Inflation, 12, dimnames = dmn))) # df
     current <- cbind(Year = rownames(current), current) # index
@@ -45,24 +47,25 @@ server <- function(input, output) {
   })
   
   output$arima <- renderPlot ({
-    library(tseries)
-    library(forecast)
-    Inflation <- ts(inf_vector, start = c(2000, 1),frequency = 12) # pred
+    Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # pred
     Inflation <- na.remove(Inflation)
     arima <- Arima(Inflation, 
-                   order = c(3,1,1), 
-                   seasonal = c(1,0,0))
+                   order = c(1,1,1), 
+                   seasonal = c(0,0,2))
     arima <- forecast(arima, h = input$select_month, level=c(0,0))
     plot(arima, lwd = 2, xlab = "Time", ylab = "Inflation")
   })
   
   output$ann <- renderPlot({
-    library(tseries)
-    library(forecast)
-    Inflation <- ts(inf_vector, start = c(2000, 1),frequency = 12) # pred
+    Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # pred
     Inflation <- na.remove(Inflation) 
     fit <- nnetar(Inflation)
     ann <- forecast(fit, h = input$select_month, PI = F) # interval confidence
     plot(ann, lwd = 2, xlab = "Time", ylab = "Inflation")
+  })
+  
+  url <- a("https://www.czso.cz/csu/czso/mira_inflace", href="https://www.czso.cz/csu/czso/mira_inflace")
+  output$link <- renderUI({
+    tagList("Source:", url)
   })
 }
