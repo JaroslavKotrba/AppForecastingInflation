@@ -1,7 +1,7 @@
 # server
 server <- function(input, output) {
   
-  make_result <- function(x, y, z) {as.numeric(x)*(1-as.numeric(y))^as.numeric(z)}
+  make_result <- function(x, y, z) {as.numeric(x)*(1+ (-as.numeric(y)/(1+as.numeric(y))) )^as.numeric(z)}
   output$result <- renderText({paste0(round(make_result(input$select_amount, input$select_rate, input$select_year), 2), " CZK")
   })
   
@@ -14,7 +14,7 @@ server <- function(input, output) {
   
   output$years <- renderPlot({
     z_all <- 1:100
-    t <- input$select_amount*(1-input$select_rate)^z_all
+    t <- input$select_amount*(1+ (-as.numeric(input$select_rate)/(1+as.numeric(input$select_rate))) )^z_all
     plot(t, type = "l", lwd = 2, col = "red", main = "Inflation over 100 years on your amount", xlab = "Years", ylab = "Amount in CZK")
   })
   
@@ -28,7 +28,7 @@ server <- function(input, output) {
   inf_table <- inf %>% html_nodes("table") %>% .[2] %>% 
     html_table(fill = TRUE) %>% .[[1]]
   
-  inf_table <- inf_table[31:58,2:13]
+  inf_table <- inf_table[32:58,2:13] # update
   inf_vector <- as.vector(t(inf_table))
   inf_vector <- as.numeric(gsub(",", ".", inf_vector))
   
@@ -44,6 +44,14 @@ server <- function(input, output) {
     current <- cbind(Year = rownames(current), current) # index
     rownames(current) <- 1:nrow(current) # index
     current
+  })
+  
+  output$hw <- renderPlot ({
+    Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # pred
+    Inflation <- na.remove(Inflation)
+    hw <- HoltWinters(Inflation, seasonal = "additive")
+    hw <- forecast(hw, h = input$select_month, level=c(0,0))
+    plot(hw, lwd = 2, xlab = "Time", ylab = "Inflation")
   })
   
   output$arima <- renderPlot ({
