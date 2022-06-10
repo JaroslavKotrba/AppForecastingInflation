@@ -46,14 +46,6 @@ server <- function(input, output) {
     current
   })
   
-  output$hw <- renderPlot ({
-    Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # pred
-    Inflation <- na.remove(Inflation)
-    hw <- HoltWinters(Inflation, seasonal = "additive")
-    hw <- forecast(hw, h = input$select_month, level=c(0,0))
-    plot(hw, lwd = 2, xlab = "Time", ylab = "Inflation")
-  })
-  
   output$arima <- renderPlot ({
     Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # pred
     Inflation <- na.remove(Inflation)
