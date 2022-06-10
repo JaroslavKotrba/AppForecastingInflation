@@ -52,8 +52,6 @@ ui <- fluidPage(
     selected = 12
   ),
   
-  plotOutput("hw"), # plot
-
   plotOutput("arima"), # plot
   
   plotOutput("ann"), # plot
