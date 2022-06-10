@@ -1,6 +1,6 @@
 # server
 server <- function(input, output) {
-  
+  options(scipen=999)
   make_result <- function(x, y, z) {as.numeric(x)*(1+ (-as.numeric(y)/(1+as.numeric(y))) )^as.numeric(z)}
   output$result <- renderText({paste0(round(make_result(input$select_amount, input$select_rate, input$select_year), 2), " CZK")
   })
