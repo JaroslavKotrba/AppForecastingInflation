@@ -8,9 +8,9 @@ ui <- fluidPage(
   title = "Inflation Rate with FORECASTING",
   titlePanel("Inflation Rate with FORECASTING"),
   br(),
-  img(src='Inf.jpg', align = "right", 
-                          width = '100px', 
-                          height = '100px', alt="Something went wrong", deleteFile = FALSE),
+  # img(src='Inf.jpg', align = "right", 
+                          # width = '100px', 
+                          # height = '100px', alt="Something went wrong", deleteFile = FALSE),
   p("See, how is your money devalved over time, so you need to invest!"),
   
   numericInput(
