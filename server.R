@@ -23,8 +23,11 @@ server <- function(input, output) {
   library(dplyr)
   library(forecast)
   library(tseries)
-  link = "https://www.czso.cz/csu/czso/mira_inflace"
-  inf = read_html(link)
+  library(curl)
+  
+  link <- "https://www.czso.cz/csu/czso/mira_inflace"
+  inf <- curl::curl(link) %>% read_html()
+  
   inf_table <- inf %>% html_nodes("table") %>% .[2] %>% 
     html_table(fill = TRUE) %>% .[[1]]
   
