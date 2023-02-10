@@ -31,7 +31,7 @@ server <- function(input, output) {
   inf_table <- inf %>% html_nodes("table") %>% .[2] %>% 
     html_table(fill = TRUE) %>% .[[1]]
   
-  inf_table <- inf_table[32:58,2:13] # update
+  inf_table <- inf_table[33:60,2:13] # update
   inf_vector <- as.vector(t(inf_table))
   inf_vector <- as.numeric(gsub(",", ".", inf_vector))
   
