@@ -63,8 +63,8 @@ server <- function(input, output) {
     Inflation <- ts(inf_vector, start = c(1997, 1),frequency = 12) # pred
     Inflation <- na.remove(Inflation)
     arima <- Arima(Inflation, 
-                   order = c(1,1,1), 
-                   seasonal = c(0,0,2))
+                   order = c(2,1,2), 
+                   seasonal = c(0,0,1))
     arima <- forecast(arima, h = input$select_month, level=c(0,0))
     plot(arima, lwd = 2, xlab = "Time", ylab = "Inflation")
   })
