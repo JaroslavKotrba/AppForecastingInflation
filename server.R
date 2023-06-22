@@ -26,12 +26,22 @@ server <- function(input, output) {
   library(curl)
   
   link <- "https://www.czso.cz/csu/czso/mira_inflace"
-  inf <- curl::curl(link) %>% read_html()
+  inf <- read_html(link)
   
-  inf_table <- inf %>% html_nodes("table") %>% .[2] %>% 
+  inf_table <- inf %>% html_nodes("table") %>% .[3] %>% 
     html_table(fill = TRUE) %>% .[[1]]
   
-  inf_table <- inf_table[33:60,2:13] # update
+  header.true <- function(df) { #move the first line to the title
+    names(df) <- as.character(unlist(df[1,]))
+    df[-c(1),]}
+  
+  inf_table <- data.frame(header.true(inf_table))
+  colnames(inf_table) <- c("year", "January", "February", "March",
+                           "April", "May", "June", "July", "August",
+                           "September", "October", "November", "December")
+  
+  inf_table$year <- NULL
+  
   inf_vector <- as.vector(t(inf_table))
   inf_vector <- as.numeric(gsub(",", ".", inf_vector))
   
