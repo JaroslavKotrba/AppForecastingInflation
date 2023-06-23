@@ -3,14 +3,18 @@
 # Libraries
 library(shiny)
 library(shinydashboard)
+library(plotly)
+library(ggplot2)
 
 ui <- fluidPage(
   title = "Inflation Rate with FORECASTING",
-  titlePanel("Inflation Rate with FORECASTING"),
+  h3(code("Inflation"), "Rate with FORECASTING", style = "color: cornflowerblue"),
   br(),
-  # img(src='Inf.jpg', align = "right", 
-                          # width = '100px', 
-                          # height = '100px', alt="Something went wrong", deleteFile = FALSE),
+  
+  img(src="https://news.stanford.edu/wp-content/uploads/2022/09/GettyImages-1400001514.jpg",
+      align = "right",
+      width = '350px',
+      height = '275px', alt="Something went wrong", deleteFile = FALSE),
   p("See, how is your money devalved over time, so you need to invest!"),
   
   numericInput(
@@ -42,12 +46,11 @@ ui <- fluidPage(
   
   p("This is the percentage you will loose: "),
   verbatimTextOutput("percentage"), # text
-  
   plotOutput("years"), # plot
   
-  plotOutput("inflation"), # plot
-  
-  p("See current inflation in Czech Republic: "),
+  p("See current inflation in the Czech Republic: "),
+  plotlyOutput("inflation"), # plotly
+  br(),
   tableOutput("current"), # text
   
   selectInput(
@@ -61,5 +64,6 @@ ui <- fluidPage(
   
   plotOutput("ann"), # plot
   
-  p("Source: https://www.czso.cz/csu/czso/mira_inflace"),
+  p("\n"),
+  uiOutput("link", style="padding-left: 0px")
 )
