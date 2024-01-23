@@ -8,6 +8,7 @@ library(ggplot2)
 
 ui <- fluidPage(
   title = "Inflation Rate with FORECASTING",
+  tags$head(tags$link(rel="shortcut icon", href="https://cdn.mos.cms.futurecdn.net/bUnTfWbeufLJPViRvxSwJF-1200-80.jpg")),
   h3(code("Inflation"), "Rate with FORECASTING", style = "color: cornflowerblue"),
   br(),
   
